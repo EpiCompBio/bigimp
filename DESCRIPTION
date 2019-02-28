@@ -1,0 +1,24 @@
+Package: bigimp
+Title: Make imputation of large datasets easier 
+Version: 0.0.0.9000
+Authors@R: 
+    person(given = "First",
+           family = "Last",
+           role = c("aut", "cre"),
+           email = "first.last@example.com")
+Description: Make imputation of large datasets easier. 
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    data.table,
+    ggplot2,
+    cowplot,
+    mice,
+    VIM
+Suggests: 
+    dplyr,
+    tibble,
+    parallel,
+    lattice,
+    svglite
