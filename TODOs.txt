@@ -1,0 +1,6 @@
+# TO DO:
+Check https://github.com/EpiCompBio/stats_utils/blob/master/stats_utils/run_mice_impute.R
+
+for all TO DOs and any other stuff that might be good to try to add/check...
+
+
