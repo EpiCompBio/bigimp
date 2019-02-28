@@ -31,6 +31,7 @@ jobs:
         - r: 3.5
 
 r_packages:
+    - covr
     - data.table
     - ggplot2
     - cowplot
@@ -48,9 +49,9 @@ r_binary_packages:
 
 # Add coverage testing:
 # https://covr.r-lib.org/
-r_github_packages:
-    - r-lib/covr
+#r_github_packages:
+#    - r-lib/covr
 
 after_success:
-    - Rscript -e 'covr::codecov()'
+    - Rscript -e 'library(covr); covr::codecov()'
 
