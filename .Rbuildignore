@@ -1,3 +1,6 @@
+^cran-comments\.md$
+^codecov\.yml$
+^\.travis\.yml$
 ^LICENSE\.md$
 ^bigimp\.Rproj$
 ^\.Rproj\.user$

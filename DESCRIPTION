@@ -21,4 +21,9 @@ Suggests:
     tibble,
     parallel,
     lattice,
-    svglite
+    svglite,
+    testthat,
+    knitr,
+    rmarkdown,
+    covr
+VignetteBuilder: knitr
