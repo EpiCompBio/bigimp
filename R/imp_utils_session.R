@@ -1,62 +1,62 @@
-#' @title
+#' @title Save an R session
 #'
-#' @description imp_utils_session()
+#' @description imp_utils_session() is a convenience function to save an R
+#' session, wraps base save() function
 #'
-#' @param
+#' @param output_name File name as string, '.RData' is appended. Default is
+#' 'session_date.RData' eg 'session_2019-03-01.RData'
 #'
-#' @param
+#' @param objects_to_save String with list of objects to save. Assumes you only
+#' want a subset from the R session. Use saveRDS() for one object or save.image()
+#' for the whole session instead.
 #'
-#' @return
+#' @param ... pass any other parameters from save() such as compress = 'gzip'
 #'
-#' @note
+#' @return Saves an external representation of th eR objects to file
 #'
 #' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman <\url{https://github.com/EpiCompBio/bigimp}>
 #'
 #' @seealso \code{\link{functioname}},
-#' \code{\link[packagename]{functioname}}.
+#' \code{\link[base]{save.image}}, \code{\link[base]{saveRDS}},
+#' \code{\link[base]{load}}, \code{\link[base]{readRDS}}.
 #'
 #' @examples
 #'
 #' \dontrun{
 #'
-#'
-#'
+#' x <- stats::runif(20)
+#' y <- list(a = 1, b = TRUE, c = "oops")
+#' imp_utils_session(output_name = "xy.RData",
+#'                   objects_to_save = 'x, y,')
 #' }
 #'
 #' @export
 #'
-#' @importFrom pack func1
-#'
 
-imp_utils_session <- function(param1 = some_default,
-               ...
-               ) {
+imp_utils_session <- function(output_name = NULL,
+                              objects_to_save = NULL,
+                              ...
+                              ) {
 # Use this instead or library or require inside functions:
 if (!requireNamespace('some_pkg', quietly = TRUE)) {
   stop('Package some_pkg needed for this function to work. Please install it.',
   call. = FALSE)
   }
 
-  # this is from stats_utils/stats_utils/run_mice_impute.R
-  # lines 1042
-
-  # The end:
-  # Remove objects that are not necessary to save:
-  # ls()
-  # object_sizes <- sapply(ls(), function(x) object.size(get(x)))
-  # as.matrix(rev(sort(object_sizes))[1:10])
-  #rm(list=ls(xxx))
-  objects_to_save <- c('imp_merged') # needs to be a character vector for save()
+  objects_to_save <- c(objects_to_save) # needs to be a character vector
 
   # Filename to save current R session, data and objects at the end:
-  if (!is.null(args[['--session']])) { # arg is NULL
-    save_session <- sprintf('%s_%s.RData', output_name, suffix)
-    print(sprintf('Saving an R session image as: %s', save_session))
-    save(list = objects_to_save, file = save_session, compress = 'gzip')
+  if (is.character(output_name)) {
+  output_name <- output_name
   } else {
-    print('Not saving an R session image, this is the default. Specify
-          the --session option otherwise')
+    output_name <- sprintf('session_%s.RData', Sys.Date())
   }
-  sessionInfo()
-  return(something_I_need)
+  save(list = objects_to_save,
+       file = output_name,
+       ...
+       )
+  print('Saved: ')
+  print(output_name)
+  print('Session information: ')
+  print(sessionInfo())
   }
