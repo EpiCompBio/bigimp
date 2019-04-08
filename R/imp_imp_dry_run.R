@@ -9,7 +9,7 @@
 #'
 #' @param print If TRUE, mice will print history on console. Default is FALSE
 #'
-#' @param output_suffix Suffix string for outfiles, default is 'dry_run.tsv'
+# @param output_suffix Suffix string for outfiles, default is 'dry_run.tsv'
 #'
 #' @param ... pass any other mice::mice() parameters
 #'
@@ -22,20 +22,44 @@
 #'
 #' @seealso \code{\link[mice]{mice}}, <\url{https://stefvanbuuren.name/fimd/}>,
 #' <\url{https://stefvanbuuren.name/mice/}>,
-#' \code{\link[data.table]{fwrite}}.
+#' \code{\link[data.table]{fwrite}},
+#' #' \code{\link[bigimp]{imp_imp_mice}}.
 #'
 #' @examples
 #'
 #' \dontrun{
-#'  my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\\t')
-#'  imp_imp_dry_run(my_data)
-#'  dry_mice$pred # inspect prediction matrix that will be used, saved to disk
-#'  dry_mice$meth # inspect methods that will be used, saved to disk
-#'  # Modify methods or predictor matrix and overwrite if needed:
-#'  pred[ ,"hyp"] <- 0
-#'  meth["bmi"] <- "norm"
-#'  # Save files or pass to imputation function
-#'  # Examples from https://stefvanbuuren.name/mice/
+#' library(mice)
+#' library(data.table)
+#' # my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\t')
+#' # Or use a pre-loaded dataset from mice:
+#' my_data <- nhanes
+#' dry_mice <- imp_imp_dry_run(my_data)
+#' dry_mice$pred # inspect prediction matrix that will be used
+#' dry_mice$meth # inspect methods that will be used
+#' # Modify methods or predictor matrix and overwrite if needed:
+#' dry_mice$pred[, 'hyp'] <- 0
+#' dry_mice$method['bmi'] <- 'norm'
+#' # An overview of the methods in mice can be found with:
+#' methods(mice)
+#' # Save files or pass to imputation function:
+#' output_suffix <- 'dry_run.tsv'
+#' data.table::fwrite(as.data.frame(dry_mice$pred),
+#'                    sprintf('predictor_matrix_%s', output_suffix),
+#'                    sep = '\t',
+#'                    na = 'NA',
+#'                    col.names = TRUE,
+#'                    row.names = TRUE,
+#'                    quote = FALSE
+#'                    )
+#' # Save methods:
+#' data.table::fwrite(as.list(dry_mice$methods),
+#'                    sprintf('methods_%s', output_suffix),
+#'                    sep = '\t',
+#'                    na = 'NA',
+#'                    col.names = TRUE,
+#'                    row.names = FALSE
+#'                   )
+#' # Examples from https://stefvanbuuren.name/mice/
 #' }
 #'
 #' @export
@@ -44,16 +68,12 @@
 imp_imp_dry_run <- function(data = NULL,
                             # maxit = 0,
                             print = FALSE,
-                            output_suffix = 'dry_run.tsv',
+                            # output_suffix = 'dry_run.tsv',
                             ...
                             ) {
 # Use this instead or library or require inside functions:
 if (!requireNamespace('mice', quietly = TRUE)) {
   stop('Package mice needed for this function to work. Please install it.',
-  call. = FALSE)
-  }
-if (!requireNamespace('data.table', quietly = TRUE)) {
-  stop('Package data.table needed for this function to work. Please install it.',
   call. = FALSE)
   }
   # this is from stats_utils/stats_utils/run_mice_impute.R
@@ -65,32 +85,7 @@ if (!requireNamespace('data.table', quietly = TRUE)) {
                          print = print,
                          ...
                         )
-  # TO DO: move separately
-  # Save predictor matrix:
-  # pred[ ,"hyp"] <- 0
-  data.table::fwrite(as.data.frame(dry_mice$pred),
-                     sprintf('predictor_matrix_%s', output_suffix),
-                     sep = '\t',
-                     na = 'NA',
-                     col.names = TRUE,
-                     row.names = TRUE,
-                     quote = FALSE
-                     )
-  # TO DO: move separately
-  # Save methods:
-  # overview of the methods in mice can be found by
-  # methods(mice)
-  # dry_mice$meth
-  # Change as eg:
-  # meth["bmi"] <- "norm"
-  data.table::fwrite(as.list(dry_mice$meth),
-                     sprintf('methods_%s', output_suffix),
-                     sep = '\t',
-                     na = 'NA',
-                     col.names = TRUE,
-                     row.names = FALSE
-                    )
   # And quit after this:
-  print('Dry run finished, exiting.')
+  print('Dry run finished.')
   return(dry_mice)
   }
