@@ -1,61 +1,93 @@
-#' @title
+#' @title Parallel imputation using mice
 #'
-#' @description imp_imp_mice()
+#' @description imp_imp_mice() imputes in parallel missing data using the
+#' mice package
 #'
-#' @param
-#'
-#' @param
+#' @param data a data frame or matrix to impute, passed to 'data' in mice::mice()
+#' @param m Number of imputed datasets to return. Default is 5
+#' @param maxit Number of iterations per dataset to impute. Default is 30
+#' @param quickpred Minimum correlation for quickpred. Default: 0.3
+#' @param print If TRUE, mice will print history on console. Default is FALSE
+#' @param diagnostics
+#' @param pred = pred
+#' @param meth = meth
+#' @param seed A seed number to pass for parallel work. Default is 12345
+#' @param output_suffix Suffix string for outfiles, default is 'imputed.tsv'
+#' @param num_cores Number of cores to use. Default is 4
+#' @param cl_type Type of cluster to use. Default is "FORK"
+#' @param ... pass any other mice::mice() parameters
 #'
 #' @return
 #'
-#' @note
+#' @note Parallelizes imputation, see makeCluster from parallel. The total number
+#' of imputed datasets will be num_cores * m.
 #'
-#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman <\url{https://github.com/EpiCompBio/bigimp}>
+#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman
+#'         <\url{https://github.com/EpiCompBio/bigimp}>
 #'
-#' @seealso \code{\link{functioname}},
-#' \code{\link[packagename]{functioname}}.
+#' @seealso \code{\link[mice]{mice}},
+#' <\url{https://stefvanbuuren.name/fimd/}>,
+#' <\url{https://stefvanbuuren.name/mice/}>,
+#' \code{\link[parallel]{parLapply}},
+#' \code{\link[parallel]{makeCluster}},
+#' \code{\link[data.table]{fwrite}}.
 #'
 #' @examples
 #'
 #' \dontrun{
-#'
-#'
-#'
+#'  my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\\t')
+#'  imp_imp_dry_run(my_data)
+#'  dry_mice$pred # inspect prediction matrix that will be used, saved to disk
+#'  dry_mice$meth # inspect methods that will be used, saved to disk
+#'  # Modify methods or predictor matrix and overwrite if needed:
+#'  pred[ ,"hyp"] <- 0
+#'  meth["bmi"] <- "norm"
+#'  # Save files or pass to imputation function
+#'  # Examples from https://stefvanbuuren.name/mice/
 #' }
 #'
 #' @export
 #'
-#' @importFrom pack func1
-#'
 
-imp_imp_mice <- function(param1 = some_default,
-               ...
-               ) {
+imp_imp_mice <- function(data = NULL,
+                         m = 5, # Number of imputed datasets
+                         maxit = 30, # max iterations per imputation
+                         quickpred = 0.3, # set the minimum correlation for variable
+                         # selection in the predictor matrix:
+                         print = FALSE, # omit printing of the iteration cycle
+                         diagnostics = TRUE,
+                         pred = pred,
+                         meth = meth,
+                         seed = 12345,
+                         print = FALSE,
+                         output_suffix = 'imputed.tsv',
+                         num_cores = 4,
+                         cl_type = "FORK",
+                         ...
+                         ) {
 # Use this instead or library or require inside functions:
-if (!requireNamespace('some_pkg', quietly = TRUE)) {
-  stop('Package some_pkg needed for this function to work. Please install it.',
-  call. = FALSE)
-  }
-if(param1 == TRUE) {
-  print('something')
-  } else {
-      print('something else')
+  if (!requireNamespace('mice', quietly = TRUE)) {
+    stop('Package mice needed for this function to work. Please install it.',
+         call. = FALSE)
+    }
+  if (!requireNamespace('data.table', quietly = TRUE)) {
+    stop('Package data.table needed for this function to work. Please install it.',
+         call. = FALSE)
   }
   # this is from stats_utils/stats_utils/run_mice_impute.R
   # lines 747
   # parallel lines from 608, 795
 
-  # TO DO:
   # Start and stop cluster functions:
-  # See:
+  # See also:
   # https://github.com/AntonioJBT/episcout/blob/master/R/epi_utils_multicore.R
-  # decide where to move them to, skip or import (library('episcout'))
 
   # Setup the cluster
   # FORK runs only in Unix like, PSOCK is default but needs env vars passed to each core
-  cl <- makeCluster(num_cores, type = "FORK")
+  cl <- parallel::makeCluster(num_cores = num_cores,
+                              type = cl_type)
   # Pass a seed:
-  clusterSetRNGStream(cl, iseed = seed)
+  parallel::clusterSetRNGStream(cl, iseed = seed)
   # Use the following if PSOCK is needed:
   # Export variables and libraries to so that they are available to all cores:
   # clusterExport(cl, input_data) # export all objects needed for function
@@ -64,7 +96,6 @@ if(param1 == TRUE) {
   # run gc() and rm() if needed # only gc() for garbage collection
 
   # Run imputation:
-
   # The following will yield num_cores * m imputed datasets
   # which will be contained in imp_pars as a list object
   # Each list within, eg imp_pars[[1]] will correspond to the structure of
@@ -72,45 +103,25 @@ if(param1 == TRUE) {
   # imp_pars[[1]][2] contains the imputed data for each variable, etc.
   # mice::ibind merges and attributes it as class mids below
 
-  # TO DO: check adding extension works OK, when parallelising and with ibind()
-  # Only run if -I given but without --extend
-  if (!is.null(args[['-I']]) &  # arg is NULL
-      args[['--extend']] == FALSE) {  # arg is boolean
-    print('Starting imputations.')
-    print(sprintf('Total number of imputed datasets to complete: %s', num_cores * m))
-    imp_pars <-
-      parLapply(cl = cl,
-                X = 1:num_cores,
-                fun = function(no) {
-                  mice(input_data,
-                       m = m, # Number of imputed datasets, 5 is default
-                       maxit = maxit, # max iterations per imputation
-                       # quickpred = set the minimum correlation for variable
-                       # selection in the predictor matrix:
-                       pred = pred,
-                       print = F, # omit printing of the iteration cycle
-                       diagnostics = TRUE,
-                       meth = meth,
-                       seed = seed
+  print('Starting imputations.')
+  print(sprintf('Total number of imputed datasets to complete: %s', num_cores * m))
+  imp_pars <- parLapply(cl = cl,
+                        X = 1:num_cores,
+                        fun = function(no) {
+                                  mice::mice(data = data,
+                                  m = m, # Number of imputed datasets, 5 is default
+                                  maxit = maxit, # max iterations per imputation
+                                  quickpred = quickpred,
+                                  print = print, # omit printing of the iteration cycle
+                                  diagnostics = diagnostics,
+                                  # selection in the predictor matrix:
+                                  pred = pred,
+                                  meth = meth,
+                                  seed = seed,
+                                  ...
                   )
-                }
-      )
-  } else if (!is.null(args[['-I']]) & # if both arguments are given run
-             args[['--extend']] == TRUE) {
-    # imp_pars <- mice.mids(input_data, maxit = 35, print = F)
-    print('Extending iterations.')
-    imp_pars <-
-      parLapply(cl = cl,
-                X = 1:num_cores,
-                fun = function(no) {
-                  mice.mids(input_data,
-                            maxit = maxit, # max iterations per imputation
-                            print = F # omit printing of the iteration cycle
-                  )
-                }
-      )
-    # plot(imp_pars)
-  }
+                    }
+        )
 
   # Merge the datasets and create a mids object:
   imp_merged <- imp_pars[[1]]
@@ -118,14 +129,10 @@ if(param1 == TRUE) {
     imp_merged <- mice::ibind(imp_merged,
                               imp_pars[[n]])
   }
-  ##########
 
-  ##########
-  # TO DO:
-  # Move this/ use function, see:
-  # https://github.com/AntonioJBT/episcout/blob/master/R/epi_utils_multicore.R
   # Stop cluster and free up the cores taken:
-  stopCluster(cl)
-  gc(verbose = TRUE) # Prob not necessary but ensure R returns memory to the OS
-  return(something_I_need)
+  parallel::stopCluster(cl)
+  parallel::gc(verbose = TRUE) # Prob not necessary but ensure R returns memory to the OS
+  # TO DO: write to disk?
+  return(imp_merged)
   }

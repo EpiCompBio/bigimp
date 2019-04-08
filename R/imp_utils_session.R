@@ -14,7 +14,8 @@
 #'
 #' @return Saves an external representation of th eR objects to file
 #'
-#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman <\url{https://github.com/EpiCompBio/bigimp}>
+#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman
+#' <\url{https://github.com/EpiCompBio/bigimp}>
 #'
 #' @seealso \code{\link{functioname}},
 #' \code{\link[base]{save.image}}, \code{\link[base]{saveRDS}},

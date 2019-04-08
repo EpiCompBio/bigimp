@@ -12,7 +12,8 @@
 #'
 #' @note Pass include = 'TRUE' to get the original dataset as well.
 #'
-#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman <\url{https://github.com/EpiCompBio/bigimp}>
+#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman
+#' <\url{https://github.com/EpiCompBio/bigimp}>
 #'
 #' @seealso \code{\link{imp_imp_dry_run}}, \code{\link{imp_imp_mice}}
 #' \code{\link[mice]{mids}},
@@ -29,7 +30,7 @@
 #' @export
 #'
 
-imp_utils_complete <- function(data = imp_merged,
+imp_utils_complete <- function(data = NULL,
                                action = 1,
                                ...
                                ) {
