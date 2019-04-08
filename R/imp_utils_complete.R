@@ -15,16 +15,31 @@
 #' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman
 #' <\url{https://github.com/EpiCompBio/bigimp}>
 #'
-#' @seealso \code{\link{imp_imp_dry_run}}, \code{\link{imp_imp_mice}}
+#' @seealso \code{\link{imp_imp_dry_run}},
+#' \code{\link{imp_imp_mice}},
 #' \code{\link[mice]{mids}},
 #' \code{\link[mice]{complete}}.
 #'
 #' @examples
 #'
 #' \dontrun{
-#'
-#'
-#'
+#' library(mice)
+#' library(parallel)
+#' library(data.table)
+#' # my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\\t')
+#' my_data <- nhanes
+#' imp_imp_dry_run(my_data)
+#' imp <- imp_imp_mice(data = my_data, num_cores = 3)
+#' imp_complete <- imp_utils_complete(data = imp, action = 1)
+#' # Save to file:
+#' output_file <- 'nhanes_imputed_dataset_1.tsv'
+#' data.table::fwrite(imp_complete,
+#'                    output_file,
+#'                    sep = '\t',
+#'                    na = 'NA',
+#'                    col.names = TRUE,
+#'                    row.names = FALSE
+#'                   )
 #' }
 #'
 #' @export
@@ -35,10 +50,10 @@ imp_utils_complete <- function(data = NULL,
                                ...
                                ) {
 
-# Use this instead or library or require inside functions:
-if (!requireNamespace('mice', quietly = TRUE)) {
-  stop('Package mice needed for this function to work. Please install it.',
-  call. = FALSE)
+  # Use this instead or library or require inside functions:
+  if (!requireNamespace('mice', quietly = TRUE)) {
+    stop('Package mice needed for this function to work. Please install it.',
+    call. = FALSE)
   }
   # this is from stats_utils/stats_utils/run_mice_impute.R
   # lines 1003
@@ -58,6 +73,6 @@ if (!requireNamespace('mice', quietly = TRUE)) {
   # imp_merged_long <- complete(imp_merged, action = 'long', include = TRUE)
   # inlcude = T, saves also the original data, as is suggested
   # This format can then be passed back to increase the number of imputations
-  # with as.mids(imp_merged_long)
+  # with as.mids(imp_merged_long) # This doesn't seem to work well though so skipping.
   return(imp_merged_comp)
   }

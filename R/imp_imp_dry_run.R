@@ -20,7 +20,8 @@
 #' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman
 #'         <\url{https://github.com/EpiCompBio/bigimp}>
 #'
-#' @seealso \code{\link[mice]{mice}}, <\url{https://stefvanbuuren.name/fimd/}>,
+#' @seealso \code{\link[mice]{mice}},
+#' <\url{https://stefvanbuuren.name/fimd/}>,
 #' <\url{https://stefvanbuuren.name/mice/}>,
 #' \code{\link[data.table]{fwrite}},
 #' #' \code{\link[bigimp]{imp_imp_mice}}.
