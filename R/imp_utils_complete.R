@@ -1,6 +1,6 @@
 #' @title Extract one complete (imputed) dataset
 #'
-#' @description imp_utils_completed() extracts one imputed dataset. This is a
+#' @description imp_utils_complete() extracts one imputed dataset. This is a
 #' covenience function to wrap  mice::complete()
 #'
 #' @param data An object of class mids, see mice::complete()
@@ -29,10 +29,11 @@
 #' @export
 #'
 
-imp_utils_completed <- function(data = imp_merged,
-                                action = 1,
-                                ...
-                                ) {
+imp_utils_complete <- function(data = imp_merged,
+                               action = 1,
+                               ...
+                               ) {
+
 # Use this instead or library or require inside functions:
 if (!requireNamespace('mice', quietly = TRUE)) {
   stop('Package mice needed for this function to work. Please install it.',
