@@ -11,15 +11,15 @@ License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Imports: 
+    mice,
+    parallel,
     data.table,
     ggplot2,
     cowplot,
-    mice,
     VIM
 Suggests: 
     dplyr,
     tibble,
-    parallel,
     lattice,
     svglite,
     testthat,

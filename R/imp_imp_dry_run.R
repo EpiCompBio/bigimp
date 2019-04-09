@@ -17,8 +17,7 @@
 #'
 #' @note Run this first, modify and pass 'method' and 'predictorMatrix' parameters in mice()
 #'
-#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman
-#'         <\url{https://github.com/EpiCompBio/bigimp}>
+#' @author Antonio J Berlanga-Taylor <\url{https://github.com/EpiCompBio/bigimp}>
 #'
 #' @seealso \code{\link[mice]{mice}},
 #' <\url{https://stefvanbuuren.name/fimd/}>,

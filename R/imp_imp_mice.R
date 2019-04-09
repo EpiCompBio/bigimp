@@ -12,7 +12,7 @@
 #' @param print If TRUE, mice will print history on console. Default is FALSE
 # @param diagnostics: TO CHECK: this was in stats_utils, unsure what it provides, not a method for mice::mice()
 #' @param seed A seed number to pass for parallel work. Default is 12345
-#' @param num_cores Number of cores to use. Default is 4
+#' @param num_cores Number of cores to use. Default is 1 or maximum available minus 1
 #' @param cl_type Type of cluster to use. Default is "FORK"
 #' @param ... pass any other mice::mice() parameters
 #'
@@ -21,8 +21,7 @@
 #' @note Parallelizes imputation, see makeCluster from parallel. The total number
 #' of imputed datasets will be num_cores * m.
 #'
-#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman
-#'         <\url{https://github.com/EpiCompBio/bigimp}>
+#' @author Antonio J Berlanga-Taylor <\url{https://github.com/EpiCompBio/bigimp}>
 #'
 #' @seealso \code{\link[mice]{mice}},
 #' <\url{https://stefvanbuuren.name/fimd/}>,
@@ -63,7 +62,7 @@ imp_imp_mice <- function(data = NULL,
 	                     pred = NULL,
 	                     method = NULL,
                          seed = 12345,
-                         num_cores = 4,
+                         num_cores = NULL,
                          cl_type = "FORK",
                          ...
                          ) {
@@ -72,7 +71,10 @@ imp_imp_mice <- function(data = NULL,
     stop('Package mice needed for this function to work. Please install it.',
          call. = FALSE)
     }
-
+  if (!requireNamespace('parallel', quietly = TRUE)) {
+    stop('Package parallel needed for this function to work. Please install it.',
+         call. = FALSE)
+    }
   # Set-up options:
   if (!is.null(pred)) {
     print('Using predictor matrix provided')
@@ -88,6 +90,18 @@ imp_imp_mice <- function(data = NULL,
       print(sprintf('%s for minimum proportion of usable cases.', minpuc))
     }
 
+  # Set a seed for reproducible analysis:
+  set.seed(seed = seed)
+
+  # Set-up multiple cores if needed
+  if (!is.null(num_cores)) {
+  num_cores <- as.integer(num_cores)
+  print(sprintf('Number of cores provided, using: %s', num_cores))
+    } else {
+    # Using all cores can slow down the computer, leave one free:
+    num_cores <- max(1, parallel::detectCores() - 1)
+    print(sprintf('Detected cores, using: %s', num_cores))
+  }
 
   # Start and stop cluster functions:
   # See also:
