@@ -13,7 +13,7 @@
 #' missing. Default is 30.
 #'
 #' @param output_name string for plot and table. Strings are composed as
-#' 'missingness_pattern_%s.tsv' and 'missingness_pattern_%s.svg'. Default is empty ''.
+#' 'missingness_pattern%s.tsv' and 'missingness_pattern%s.svg'. Default is empty ''.
 #'
 #' @return
 #'
@@ -28,9 +28,9 @@
 #' @examples
 #'
 #' \dontrun{
-#'
-#'
-#'
+#' library(mice)
+#' imp_plot_missingness(nhanes)
+#' dir() # a tsv and svg files should be saved with the missingness pattern and plot
 #' }
 #'
 #' @export

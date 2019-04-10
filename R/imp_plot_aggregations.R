@@ -1,39 +1,69 @@
-#' @title
+#' @title Get missing and imputed values per variable
 #'
-#' @description imp_plot_aggregations()
+#' @description imp_plot_aggregations() wraps VIM::aggr() function. Convenienty
+#' plots and saves results to file.
 #'
-#' @param
+#' @param data A datafame with missing or imputed data.
+#' @param vars_interest = NULL
+#' @param output_name string for plot and table. Strings are composed as
+#' 'missingness_vars_interest%s.txt' and 'missingness_vars_interest%s.svg'.
+#' Default is empty ''.
+#' @param get_plot Determines whether an svg plot should be created and saved.
+#' Default is TRUE
+#' @param save_table Save the missing/imputed aggregations to file.
+#' Default is TRUE
 #'
-#' @param
-#'
-#' @return
+#' @return Returns the aggr() object. Also log info to screen,
+#' plot and missing aggregations pattern to file.
 #'
 #' @note
 #'
-#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman <\url{https://github.com/EpiCompBio/bigimp}>
+#' @author Antonio J Berlanga-Taylor <\url{https://github.com/EpiCompBio/bigimp}>
 #'
-#' @seealso \code{\link{functioname}},
-#' \code{\link[packagename]{functioname}}.
+#' @seealso \code{\link{imp_plot_missingness}},
+#' \code{\link[VIM]{aggr}}.
+#'
+#' @note Many values for VIM::aggr() are hard-coded for convenience, this is intended
+#' for faster exploring and processing. Use the original function for tuning.
 #'
 #' @examples
 #'
 #' \dontrun{
-#'
-#'
-#'
+#' library(mice)
+#' library(VIM)
+#' nhanes
+#' vim_aggr_plot <- imp_plot_aggregations(nhanes)
+#' # Explore object:
+#' vim_aggr_plot$missings
+#' summary(vim_aggr_plot) # If save_table is TRUE the output is saved
+#' plot(vim_aggr_plot) # If get_plot is TRUE this is saved to a file
+#' # Plot and look at only a subset of variables:
+#' data <- nhanes
+#' vars_interest <- c('age', 'bmi')
+#' vim_aggr_plot <- imp_plot_aggregations(data = data,
+#'                                        vars_interest = vars_interest,
+#'                                        output_name = '_bmi_age'
+#'                                        )
+#' # The above will only look at BMI and age and will save
+#' # the files 'missingness_vars_interest_bmi_age' svg plot and log info (txt)
 #' }
 #'
 #' @export
 #'
-#' @importFrom pack func1
-#'
 
-imp_plot_aggregations <- function(param1 = some_default,
-               ...
-               ) {
+# TO DO: values are hard-coded for convenience, prob not worth changing though
+# @param ... pass any other
+
+imp_plot_aggregations <- function(data = NULL,
+                                  vars_interest = NULL,
+                                  output_name = '',
+                                  get_plot = TRUE,
+                                  save_table = TRUE,
+                                  ...
+                                  ) {
 # Use this instead or library or require inside functions:
-if (!requireNamespace('some_pkg', quietly = TRUE)) {
-  stop('Package some_pkg needed for this function to work. Please install it.',
+if (!requireNamespace('VIM', quietly = TRUE)) {
+  stop('Package VIM needed for this function to work. Please install it.',
   call. = FALSE)
   }
 
@@ -43,27 +73,60 @@ if (!requireNamespace('some_pkg', quietly = TRUE)) {
   # See pattern using VIM and mice libraries
   # Plot aggregations for missing/imputed values:
   # TO DO: could move this to post imputation to make full use
-  # input_data gets rewritten below though, and is used after input from both
-  # long format for --extension and imputation
-  svg(sprintf('missingness_vars_interest_VIM_%s.svg', output_name))
-  # TO DO: save legend
-  aggr_plot <- aggr(input_data,#[, vars_interest],
-                    combined = FALSE, # plot bar and pattern separately
-                    only.miss = FALSE, # Plot combinations only for missing variables
-                    numbers = TRUE,
-                    sortVars = TRUE,
-                    labels = names(input_data),#[, vars_interest]),
-                    cex.axis = 0.4,
-                    gap = 2,
-                    ylab = c('Proportion of missing data', 'Pattern')
-  )
-  dev.off()
-  # TO DO:
-  # save summary of aggregations for missing/imputed values as table in separate function:
-  summary(aggr_plot)
-  # Barplot (left) shows the proportion of missing or imputed values in each variable.
-  # Aggregation plot (middle) shows all existing combinations of of  missing  (red),
-  # imputed (orange) and observed (blue) values.
-  # Barplot (right) shows the frequencies of different variable combinations
-  return(something_I_need)
+
+  if (!is.null(vars_interest)) {
+      data <- data[, vars_interest]
+   } #else {
+  #     data <- data
+  # }
+  if (get_plot == TRUE) {
+    # TO DO: print out legend
+    svg(sprintf('missingness_vars_interest%s.svg', output_name))
+    # TO DO: save legend
+    aggr_plot <- VIM::aggr(x = data,
+                           combined = FALSE, # plot bar and pattern separately
+                           only.miss = FALSE, # Plot combinations only for missing variables
+                           numbers = TRUE,
+                           sortVars = TRUE,
+                           labels = names(data),#[, vars_interest]),
+                           cex.axis = 0.4,
+                           gap = 2,
+                           ylab = c('Proportion of missing data', 'Pattern'),
+                           plot = get_plot,
+                           ...
+                           )
+    dev.off()
+    } else {
+      aggr_plot <- VIM::aggr(x = data,
+                             combined = FALSE, # plot bar and pattern separately
+                             only.miss = FALSE, # Plot combinations only for missing variables
+                             numbers = TRUE,
+                             sortVars = TRUE,
+                             labels = names(data),#[, vars_interest]),
+                             cex.axis = 0.4,
+                             gap = 2,
+                             ylab = c('Proportion of missing data', 'Pattern'),
+                             plot = get_plot,
+                             ...
+                             )
+        }
+  if (save_table == TRUE) {
+    # this is from stats_utils/stats_utils/run_mice_impute.R
+    # lines 638
+    # Save aggregation plot summary as log for information only
+    # Provides counts and proportion of NAs
+
+    sink(sprintf('missingness_vars_interest%s.txt', output_name),
+         append = FALSE,
+         split = TRUE,
+         type = c("output", "message")
+         )
+    print(summary(aggr_plot))
+    sink(file = NULL) # stop sinking
+  } else {
+      # just print to screen for info:
+      print(summary(aggr_plot))
+    }
+
+  return(aggr_plot)
   }
