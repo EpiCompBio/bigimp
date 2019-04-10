@@ -1,0 +1,52 @@
+[1] "Saving mice call details:"
+[[1]]
+mice::mice(data = data, m = m, method = method, predictorMatrix = pred, 
+    maxit = maxit, printFlag = print, seed = seed)
+
+[[2]]
+mice::ibind(x = imp_merged, y = imp_pars[[n]])
+
+[[3]]
+mice::ibind(x = imp_merged, y = imp_pars[[n]])
+
+[[4]]
+mice::ibind(x = imp_merged, y = imp_pars[[n]])
+
+[[5]]
+mice::ibind(x = imp_merged, y = imp_pars[[n]])
+
+[[6]]
+mice::ibind(x = imp_merged, y = imp_pars[[n]])
+
+[[7]]
+mice::ibind(x = imp_merged, y = imp_pars[[n]])
+
+[1] "Number of multiple imputations performed"
+[1] 35
+[1] "Saving formulas:"
+$age
+age ~ 0
+<environment: 0x118938870>
+
+$bmi
+bmi ~ 0 + age
+<environment: 0x118938870>
+
+$hyp
+hyp ~ 0 + age
+<environment: 0x118938870>
+
+$chl
+chl ~ 0 + age + bmi + hyp
+<environment: 0x118938870>
+
+[1] "Saving seed specified:"
+[1] 12345
+[1] "Saving number of iterations:"
+[1] 50
+[1] "Saving logged events:"
+NULL
+[1] "Saving version of mice:"
+[1] ‘3.3.0’
+[1] "Saving date and time of analysis:"
+[1] "2019-04-10 16:15:56 BST"

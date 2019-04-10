@@ -16,7 +16,8 @@ Imports:
     data.table,
     ggplot2,
     cowplot,
-    VIM
+    VIM,
+    episcout
 Suggests: 
     dplyr,
     tibble,

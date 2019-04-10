@@ -8,7 +8,7 @@
 #' @param minpuc Minimum proportion of usable cases for predictors to be used for imputation
 #'               Default is 0.3
 #' @param m Number of imputed datasets to return. Default is 5
-#' @param maxit Number of iterations per dataset to impute. Default is 30
+#' @param maxit Number of iterations per dataset to impute. Default is 50
 #' @param print If TRUE, mice will print history on console. Default is FALSE
 # @param diagnostics: TO CHECK: this was in stats_utils, unsure what it provides, not a method for mice::mice()
 #' @param seed A seed number to pass for parallel work. Default is 12345
@@ -29,14 +29,15 @@
 #' \code{\link[parallel]{parLapply}},
 #' \code{\link[parallel]{makeCluster}},
 #' \code{\link[data.table]{fwrite}},
-#' \code{\link[bigimp]{imp_imp_dry_run}}.
+#' \code{\link[bigimp]{imp_imp_dry_run}},
+#' \code{\link[bigimp]{imp_imp_report}}.
 #'
 #' @examples
 #'
 #' \dontrun{
-#' # See example in imp_imp_dry_run()
 #' library(mice)
 #' library(parallel)
+#' library(episcout)
 #' # my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\\t')
 #' my_data <- nhanes
 #' imp_imp_dry_run(my_data)
@@ -45,7 +46,16 @@
 #' imp$data
 #' imp$imp
 #' imp$call
-#'
+#' # Save the object:
+#' saveRDS(imp, file = 'imputation.rds')
+#' # imp2 <- readRDS('imputation.rds')
+#' # Get one complete imputation:
+#' imp_complete <- imp_imp_complete(data = imp)
+#' episcout::epi_head_and_tail(imp_complete, cols = 4)
+#' # Save this to file:
+#' episcout::epi_write(imp_complete, file_name = 'nhanes_imputed.tsv')
+#' # Save imputation details:
+#' imp_imp_report(mids = imp)
 #' }
 #'
 #' @export
@@ -55,7 +65,7 @@ imp_imp_mice <- function(data = NULL,
                          mincor = 0.3, # set the minimum correlation for variable
                          minpuc = 0.3,
                          m = 5, # Number of imputed datasets
-                         maxit = 30, # max iterations per imputation
+                         maxit = 50, # max iterations per imputation
                          print = FALSE, # omit printing of the iteration cycle
                          # diagnostics = TRUE,
                          # methods and predictor matrix:

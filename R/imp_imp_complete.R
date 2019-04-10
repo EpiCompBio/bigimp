@@ -1,6 +1,6 @@
 #' @title Extract one complete (imputed) dataset
 #'
-#' @description imp_utils_complete() extracts one imputed dataset. This is a
+#' @description imp_imp_complete() extracts one imputed dataset. This is a
 #' covenience function to wrap  mice::complete()
 #'
 #' @param data An object of class mids, see mice::complete()
@@ -29,7 +29,7 @@
 #' my_data <- nhanes
 #' imp_imp_dry_run(my_data)
 #' imp <- imp_imp_mice(data = my_data, num_cores = 3)
-#' imp_complete <- imp_utils_complete(data = imp, action = 1)
+#' imp_comp <- imp_imp_complete(data = imp, action = 1)
 #' # Save to file:
 #' output_file <- 'nhanes_imputed_dataset_1.tsv'
 #' data.table::fwrite(imp_complete,
@@ -44,10 +44,10 @@
 #' @export
 #'
 
-imp_utils_complete <- function(data = NULL,
-                               action = 1,
-                               ...
-                               ) {
+imp_imp_complete <- function(data = NULL,
+                             action = 1,
+                             ...
+                             ) {
 
   # Use this instead or library or require inside functions:
   if (!requireNamespace('mice', quietly = TRUE)) {
