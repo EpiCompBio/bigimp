@@ -37,8 +37,9 @@
 #' \dontrun{
 #' library(mice)
 #' library(parallel)
+#' library(data.table)
 #' library(episcout)
-#' # my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\\t')
+#' # my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\t')
 #' my_data <- nhanes
 #' imp_imp_dry_run(my_data)
 #' imp <- imp_imp_mice(data = my_data, num_cores = 3)
@@ -50,16 +51,25 @@
 #' saveRDS(imp, file = 'imputation.rds')
 #' # imp2 <- readRDS('imputation.rds')
 #' # Get one complete imputation:
-#' imp_complete <- imp_imp_complete(data = imp)
+#' imp_complete <- imp_imp_complete(data = imp, action = 1)
 #' episcout::epi_head_and_tail(imp_complete, cols = 4)
-#' # Save this to file:
+#' # Save to file:
 #' episcout::epi_write(imp_complete, file_name = 'nhanes_imputed.tsv')
+#' # Get long format with all imputations and original data:
+#' imp_merged_long <- imp_imp_complete(imp, action = 'long', include = TRUE)
+#' epi_head_and_tail(imp_merged_long)
+#' # Save to file:
+#' epi_write(imp_merged_long, 'nhanes_imputed_long.tsv')
 #' # Save imputation details:
 #' imp_imp_report(mids = imp)
 #' }
 #'
 #' @export
 #'
+
+
+
+
 
 imp_imp_mice <- function(data = NULL,
                          mincor = 0.3, # set the minimum correlation for variable

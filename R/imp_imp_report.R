@@ -37,32 +37,6 @@
 #' @export
 #'
 
-# This is the same as epi_write(), import that instead
-
-# imp_utils_write <- function(file_object = NULL,
-#                             output_name = '',
-#                             row.names = TRUE,
-#                             quote = FALSE,
-#                             sep = '\t',
-#                             na = 'NA',
-#                             col.names = TRUE,
-#                             ...) {
-#
-#   if (!requireNamespace('data.table', quietly = TRUE)) {
-#     stop("Package data.table needed for this function to work. Please install it.",
-#          call. = FALSE)
-#   }
-#   data.table::fwrite(x = file_object,
-#                      file = output_name,
-#                      row.names = row.names,
-#                      quote = quote,
-#                      sep = sep,
-#                      na = na,
-#                      col.names = col.names,
-#                      ...
-#                      )
-#   }
-
 imp_imp_report <- function(mids = NULL, output_name = '') {
   # this is from stats_utils/stats_utils/run_mice_impute.R
   # lines 805-872

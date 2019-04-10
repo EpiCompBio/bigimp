@@ -20,26 +20,7 @@
 #' \code{\link[mice]{complete}}.
 #'
 #' @examples
-#'
-#' \dontrun{
-#' library(mice)
-#' library(parallel)
-#' library(data.table)
-#' # my_data <- read.csv('my_file_with_missing_data.tsv', sep = '\\t')
-#' my_data <- nhanes
-#' imp_imp_dry_run(my_data)
-#' imp <- imp_imp_mice(data = my_data, num_cores = 3)
-#' imp_comp <- imp_imp_complete(data = imp, action = 1)
-#' # Save to file:
-#' output_file <- 'nhanes_imputed_dataset_1.tsv'
-#' data.table::fwrite(imp_complete,
-#'                    output_file,
-#'                    sep = '\t',
-#'                    na = 'NA',
-#'                    col.names = TRUE,
-#'                    row.names = FALSE
-#'                   )
-#' }
+#' See example in imp_imp_mice()
 #'
 #' @export
 #'
