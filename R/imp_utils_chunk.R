@@ -34,7 +34,7 @@
 #' chunk_list <- imp_utils_chunk(data = my_data)
 #' str(chunk_list)
 #' # Write the files:
-#' for (k in 1:(length(chunk_list) - 1)) # TO DO: check why this was +1, last element is empty data.frame
+#' for (k in 1:(length(chunk_list) - 1)) {# TO DO: check why this was +1, last element is empty data.frame
 #'   epi_write(as.data.frame(chunk_list[k]),
 #'             sprintf("my_data%.f.tsv", k)
 #'            )
@@ -50,11 +50,7 @@ imp_utils_chunk <- function(data = NULL,
                             ...
                             ) {
   #### This function divides the dataset into a 'N' number of "chunks:
-  ################## input variables
-  ### N = number of chunks to make
-  ### seed = the set.seed(XXX) value to use
-  ### data = data to input (ukb)
-  set.seed(seed = seed) ## set.seed
+  set.seed(seed = seed)
   sample_size <- floor((1 / n) * nrow(data)) # fraction of the data
   for (j in 1:n) {
     new_data <- data

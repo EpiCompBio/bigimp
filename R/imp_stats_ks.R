@@ -1,16 +1,17 @@
-#' @title
+#' @title Post-imputation checks
 #'
 #' @description imp_stats_ks()
 #'
-#' @param
+#' @param data_with_missing
 #'
-#' @param
+#' @param imputed_data
 #'
 #' @return
 #'
 #' @note
 #'
-#' @author Antonio J Berlanga-Taylor, George Adams, Deborah Schneider-Luftman <\url{https://github.com/EpiCompBio/bigimp}>
+#' @author Antonio J Berlanga-Taylor, George Adams,
+#' Deborah Schneider-Luftman <\url{https://github.com/EpiCompBio/bigimp}>
 #'
 #' @seealso \code{\link{functioname}},
 #' \code{\link[packagename]{functioname}}.
@@ -25,16 +26,15 @@
 #'
 #' @export
 #'
-#' @importFrom pack func1
-#'
 
-imp_stats_ks <- function(param1 = some_default,
-               ...
-               ) {
-# Use this instead or library or require inside functions:
-if (!requireNamespace('some_pkg', quietly = TRUE)) {
-  stop('Package some_pkg needed for this function to work. Please install it.',
-  call. = FALSE)
+imp_stats_ks <- function(data_with_missing = NULL,
+                         imputed_data = NULL,
+                         ...
+                        ) {
+  # Use this instead or library or require inside functions:
+  if (!requireNamespace('some_pkg', quietly = TRUE)) {
+      stop('Package some_pkg needed for this function to work. Please install it.',
+      call. = FALSE)
   }
 
   ########
@@ -44,23 +44,28 @@ if (!requireNamespace('some_pkg', quietly = TRUE)) {
   # most are plot or stats, place as eg imp_stats_skew, etc. or as appropriate
   # missing plot functions?
 
+########
+# load data with missing
+# load imputed
+# obtain:
+  # ks.test()
+  # skewness() with RESULT <- skew_pre/skew_post --- moments4
+  # kurtosis() with RESULT <- kurt_pre/kurt_post --- moments3
+  # var() with RESULT <- var_pre/var_post --- moments2
+  # mean() with RESULT <- mean_pre/mean_post --- moments1
+# Run per column/variable
+# Run per chunk/dataset
+# Moment/function/test per variable type
+# Output plot and table
+
+
+########
   ### Assessment of the quality of replacement
-
-  # setwd("~/Dropbox/010 EPIDEMIOLOGY Msc/026 Research Module/017_testdata/POST_MSC_DATA")
-
-
-
-  #ls <- readRDS("VERSION2_TESTTRAIN.rds")
-  ls <- readRDS("PRACTISE2_test_train.rds")
-  train <- ls$train
-  test <- ls$test
+  # ls <- readRDS("PRACTISE2_test_train.rds")
+  train <- data$train
+  test <- data$test
   train <- rbind(train, test)
-
-  #train <- rbind(train, test)
-
-
   eid <- train$eid
-
 
   # # # train %<>% select(-eid)
   # add_random_nas_to_frame <- function(frame, num_features) {
@@ -79,9 +84,6 @@ if (!requireNamespace('some_pkg', quietly = TRUE)) {
 
   # anyNA(train_na)
 
-
-
-
   library(magrittr)
   library(dplyr)
   library(tidyr)
@@ -98,12 +100,12 @@ if (!requireNamespace('some_pkg', quietly = TRUE)) {
     train %<>% as_tibble()
     train_na %<>% as_tibble()
     ## KS-test comparison
-    res = rbind("Statistic", "P.value")
+    res <- rbind("Statistic", "P.value")
     colnames(res)[1] <- "value"
     for (i in 1:ncol(train)) {
-      ks_out <- ks.test(as.matrix(train[,i]), as.matrix(train_na[,i]))
-      res = cbind(res,c(ks_out$statistic, ks_out$p.value))
-      colnames(res)[i+1] <- colnames(train[,i])
+      ks_out <- ks.test(as.matrix(train[, i]), as.matrix(train_na[, i]))
+      res <- cbind(res,c(ks_out$statistic, ks_out$p.value))
+      colnames(res)[i + 1] <- colnames(train[, i])
     }
 
 
