@@ -25,7 +25,7 @@
 #'
 #' @export
 #'
-#' @importFrom pack func1
+# @importFrom pack func1
 #'
 
 imp_plot_convergence <- function(param1 = some_default,

@@ -39,7 +39,7 @@
 #'             sprintf("my_data%.f.tsv", k)
 #'            )
 #' }
-#'
+#' }
 #' @export
 #'
 

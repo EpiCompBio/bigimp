@@ -28,3 +28,4 @@ Suggests:
     rmarkdown,
     covr
 VignetteBuilder: knitr
+RoxygenNote: 6.1.1
