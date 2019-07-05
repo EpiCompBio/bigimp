@@ -92,6 +92,11 @@ r_packages:
     - parallel
     - lattice
     - svglite
+    - devtools
+
+install:
+  - R -e 'library(devtools) ; install_github("AntonioJBT/episcout")'
+
 
 r_binary_packages:
     - testthat
