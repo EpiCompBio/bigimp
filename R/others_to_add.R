@@ -12,24 +12,24 @@
 # attributes(imp_merged)
 
 # Save predictor matrix:
-fwrite(as.data.frame(imp_merged$pred),
-       sprintf('predictor_matrix_%s', output_file_name),
-       sep = '\t',
-       na = 'NA',
-       col.names = TRUE,
-       row.names = TRUE,
-       quote = FALSE
-)
+#data.table::fwrite(as.data.frame(imp_merged$pred),
+#       sprintf('predictor_matrix_%s', output_file_name),
+#       sep = '\t',
+#       na = 'NA',
+#       col.names = TRUE,
+#       row.names = TRUE,
+#       quote = FALSE
+#)
 
 # Save methods:
 # imputation method used, "" empty string means no NAs
-fwrite(as.list(imp_merged$meth),
-       sprintf('methods_%s', output_file_name),
-       sep = '\t',
-       na = 'NA',
-       col.names = TRUE,
-       row.names = FALSE
-)
+#data.table::fwrite(as.list(imp_merged$meth),
+#       sprintf('methods_%s', output_file_name),
+#       sep = '\t',
+#       na = 'NA',
+#       col.names = TRUE,
+#       row.names = FALSE
+#)
 
 
 

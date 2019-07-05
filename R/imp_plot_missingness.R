@@ -29,6 +29,7 @@
 #'
 #' \dontrun{
 #' library(mice)
+#' library(data.table)
 #' imp_plot_missingness(nhanes)
 #' dir() # a tsv and svg files should be saved with the missingness pattern and plot
 #' }
@@ -47,8 +48,8 @@ imp_plot_missingness <- function(data = NULL,
     stop('Package mice needed for this function to work. Please install it.',
     call. = FALSE)
   }
-  if (!requireNamespace('mice', quietly = TRUE)) {
-    stop('Package mice needed for this function to work. Please install it.',
+  if (!requireNamespace('data.table', quietly = TRUE)) {
+    stop('Package data.table needed for this function to work. Please install it.',
          call. = FALSE)
   }
   # Inspect the missing data pattern:
